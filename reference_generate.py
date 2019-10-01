@@ -7,6 +7,8 @@ filename_addresses = "addresses.txt"
 with open(filename_in, 'r') as file_in:
     lines = file_in.readlines()
 
+lines = [line.upper() for line in lines]
+
 blocks_addresses = {}
 count = 0
 while True:
