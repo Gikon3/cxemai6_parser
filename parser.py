@@ -15,6 +15,12 @@ def mem_reference(word, word_ref):
         else "aaaaaaaa"
 
 
+with open(filename_addresses, 'r') as file_addr:
+    blocks_addresses = json.load(file_addr)
+
+with open(filename_reference, 'r') as file_ref:
+    reference = json.load(file_ref)
+
 with open(filename_in, 'r') as file_in:
     lines_in = file_in.readlines()
 
@@ -26,6 +32,20 @@ with open(filename_in, 'r') as file_in:
 # for i in long_lines:
 #     lines_in[i] = "{0:s}\n{1:s} {2:s}".format(lines_in[i][0:35], "_" * 26, lines_in[i][35:])
 
+# Remove COM_OK
+count = 0
+while True:
+    try:
+        if lines_in[count][27:35] == COM_OK:
+            lines_in.pop(count)
+
+        else:
+            count += 1
+
+    except IndexError:
+        break
+
+# IRQ memory
 count = 0
 irq_mem = []
 while True:
@@ -40,12 +60,37 @@ while True:
     except IndexError:
         break
 
-with open(filename_addresses, 'r') as file_addr:
-    blocks_addresses = json.load(file_addr)
+# ALRM_TMR worked
+count = 0
+alrm = []
+while True:
+    try:
+        if lines_in[count][27:35] == COM_ALRM_TMR:
+            alrm.append(lines_in[count][:26])
+            # lines_in.pop(count)
 
-with open(filename_reference, 'r') as file_ref:
-    reference = json.load(file_ref)
+        else:
+            count += 1
 
+    except IndexError:
+        break
+
+# Unreset
+count = 0
+unreset = []
+while True:
+    try:
+        if lines_in[count][27:35] == COM_UNRESET_DEVICE:
+            unreset.append(lines_in[count][:26])
+            # lines_in.pop(count)
+
+        else:
+            count += 1
+
+    except IndexError:
+        break
+
+# main parse
 count = 0
 errors = {}
 while True:
@@ -57,24 +102,35 @@ while True:
             count += 1
 
             # module
+            print(lines_in[count][27:35])
             count += 1
 
             number_errors = int(lines_in[count][27:35], 16)
-            errors_count = 0
+            number_errors = number_errors if (number_errors * 2) < (THRESHOLD_ERRORS * 2) else THRESHOLD_ERRORS
             count += 1
 
-            if lines_in[count][27:35] not in errors.keys():
-                errors[lines_in[count][27:35]] = []
-            if errors_count < number_errors:
-                errors[lines_in[count][27:35]].append([lines_in[count][:26], lines_in[count + 1][27:35],
-                                                       reference[lines_in[count][27:35]],
-                                                       bin(operator.xor(
-                                                           int("0x{0:s}".formate(lines_in[count + 1][27:35])),
-                                                           int("0x{0:s}".formate(
-                                                               mem_reference(lines_in[count + 1][27:35],
-                                                                             reference[lines_in[count][27:35]])))))])
-                errors_count += 1
-                count += 2
+            print("count = ", count)
+            # print("number_errors = ", number_errors)
+            for errors_count in range(number_errors):
+                # print("errors_count = ", errors_count)
+                print(lines_in[count][:-1])
+                if lines_in[count][27:35] == COM_ALRM_TMR \
+                        or lines_in[count + 1][27:35] == COM_ALRM_TMR \
+                        or lines_in[count][27:35] == COM_UNRESET_DEVICE \
+                        or lines_in[count + 1][27:35] == COM_UNRESET_DEVICE:
+                    count += 1
+                    break
+                if lines_in[count][27:35] not in errors.keys():
+                    errors[lines_in[count][27:35]] = []
+                if errors_count < number_errors:
+                    errors[lines_in[count][27:35]].append([lines_in[count][:26], lines_in[count + 1][27:35],
+                                                           reference[lines_in[count][27:35]],
+                                                           bin(operator.xor(
+                                                               int(lines_in[count + 1][27:35], 16),
+                                                               int(mem_reference(lines_in[count + 1][27:35],
+                                                                                 reference[lines_in[count][27:35]]),
+                                                                   16)))])
+                    count += 2
 
         else:
             count += 1
