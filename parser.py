@@ -3,9 +3,12 @@ import operator
 
 from defines import *
 
-filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54_correct.log",
-                    "logs_in/session_361/U_26.09.2019_06-56-58_correct.log",
-                    "logs_in/session_362/U_26.09.2019_07-18-06_correct.log"]
+# filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54_correct.log",
+#                     "logs_in/session_361/U_26.09.2019_06-56-58_correct.log",
+#                     "logs_in/session_362/U_26.09.2019_07-18-06_correct.log",
+filename_in_list = ["logs_in/session_409/summary_409_correct.log",
+                    "logs_in/session_410/U_28.09.2019_23-41-46_correct.log",
+                    "logs_in/session_411/U_29.09.2019_00-21-12_correct.log"]
 
 filename_reference = "reference.txt"
 filename_addresses = "addresses.txt"
@@ -127,6 +130,7 @@ for filename_in in filename_in_list:
                             errors[lines_in[count][27:35]].append([lines_in[count][:26], lines_in[count + 1][27:35],
                                                                    reference[lines_in[count][27:35]], reference_xor_word])
                         except KeyError:
+                            print(lines_in[count - 1][:-1])
                             print(lines_in[count][:-1])
                             exit("KeyError")
 
@@ -138,10 +142,17 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    lines_out = {'alrm_tmr': [], 'channels': [], 'fts': [], 'gpio': [], 'inmux': [], 'pll': [], 'spim4': [], 'tlm': [],
-                 'tmr1': [], 'tsm': [], 'uart1': [], 'uart2': [], 'memory': []}
+    lines_out = {'alrm_tmr': {}, 'channels': {}, 'fts': {}, 'gpio': {}, 'inmux': {}, 'pll': {}, 'spim4': {}, 'tlm': {},
+                 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
     for address in errors.keys():
-        lines_out[blocks_addresses[address]].append(errors[address])
+        lines_out[blocks_addresses[address]][address] = errors[address]
+
+    for block in lines_out.keys():
+        for address in lines_out[block].keys():
+            for error_frame in lines_out[block][address]:
+                if error_frame[1][:4] == "F0DA":
+                    print(address)
+                    exit()
 
     with open(filename_out, 'w') as file_out:
         json.dump(lines_out, file_out, indent=2)
