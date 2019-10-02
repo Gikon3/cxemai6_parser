@@ -5,7 +5,7 @@ from defines import *
 
 # filename_in = "logs_in/1/U_26.09.2019_05-11-54.log"
 filename_in = "logs_in/1/U_26.09.2019_05-11-54_correct.log"
-filename_out = "logs_out/1.log"
+filename_out = "logs_out/session_360.log"
 filename_reference = "reference.txt"
 filename_addresses = "addresses.txt"
 
@@ -37,7 +37,8 @@ count = 0
 while True:
     try:
         if lines_in[count][27:35] == COM_OK:
-            lines_in.pop(count)
+            lines_in.pop(count)  # COM_OK
+            lines_in.pop(count)  # Epoch
 
         else:
             count += 1
@@ -68,6 +69,7 @@ while True:
         if lines_in[count][27:35] == COM_ALRM_TMR:
             alrm.append(lines_in[count][:26])
             # lines_in.pop(count)
+            count += 1
 
         else:
             count += 1
@@ -83,6 +85,7 @@ while True:
         if lines_in[count][27:35] == COM_UNRESET_DEVICE:
             unreset.append(lines_in[count][:26])
             # lines_in.pop(count)
+            count += 1
 
         else:
             count += 1
@@ -102,18 +105,13 @@ while True:
             count += 1
 
             # module
-            print(lines_in[count][27:35])
             count += 1
 
             number_errors = int(lines_in[count][27:35], 16)
             number_errors = number_errors if (number_errors * 2) < (THRESHOLD_ERRORS * 2) else THRESHOLD_ERRORS
             count += 1
 
-            print("count = ", count)
-            # print("number_errors = ", number_errors)
             for errors_count in range(number_errors):
-                # print("errors_count = ", errors_count)
-                print(lines_in[count][:-1])
                 if lines_in[count][27:35] == COM_ALRM_TMR \
                         or lines_in[count + 1][27:35] == COM_ALRM_TMR \
                         or lines_in[count][27:35] == COM_UNRESET_DEVICE \
@@ -123,13 +121,12 @@ while True:
                 if lines_in[count][27:35] not in errors.keys():
                     errors[lines_in[count][27:35]] = []
                 if errors_count < number_errors:
+                    reference_xor_word = "{0:032b}".format(operator.xor(
+                        int(lines_in[count + 1][27:35], 16),
+                        int(mem_reference(lines_in[count + 1][27:35],
+                                          reference[lines_in[count][27:35]]), 16)))
                     errors[lines_in[count][27:35]].append([lines_in[count][:26], lines_in[count + 1][27:35],
-                                                           reference[lines_in[count][27:35]],
-                                                           bin(operator.xor(
-                                                               int(lines_in[count + 1][27:35], 16),
-                                                               int(mem_reference(lines_in[count + 1][27:35],
-                                                                                 reference[lines_in[count][27:35]]),
-                                                                   16)))])
+                                                           reference[lines_in[count][27:35]], reference_xor_word])
                     count += 2
 
         else:
@@ -143,8 +140,5 @@ lines_out = {'alrm_tmr': [], 'channels': [], 'fts': [], 'gpio': [], 'inmux': [],
 for address in errors.keys():
     lines_out[blocks_addresses[address]].append(errors[address])
 
-# print(json.dumps(irq_mem, indent=2))
-# print(json.dumps(errors, indent=2))
-
 with open(filename_out, 'w') as file_out:
-    file_out.writelines(lines_out)
+    json.dump(lines_out, file_out, indent=2)
