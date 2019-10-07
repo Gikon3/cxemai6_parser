@@ -7,7 +7,8 @@ filename_in_list = ["logs_in/session_409/summary_409.log",
                     "logs_in/session_411/U_29.09.2019_00-21-12.log"]
 
 for filename_in in filename_in_list:
-    filename_out = "{0:s}_correct.log".format(os.path.splitext(filename_in)[0])
+    filename_out = "{0:s}/temp/{1:s}_alignment.log".format(os.path.split(filename_in)[0],
+                                                           os.path.splitext(filename_in)[0].split('/')[-1])
 
     with open(filename_in, 'r') as file_in:
         lines_in = file_in.readlines()
