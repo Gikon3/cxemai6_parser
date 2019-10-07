@@ -1,14 +1,15 @@
+import os
 import json
 import operator
 
 from defines import *
 
-# filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54_correct.log",
-#                     "logs_in/session_361/U_26.09.2019_06-56-58_correct.log",
-#                     "logs_in/session_362/U_26.09.2019_07-18-06_correct.log",
-filename_in_list = ["logs_in/session_409/summary_409_correct.log",
-                    "logs_in/session_410/U_28.09.2019_23-41-46_correct.log",
-                    "logs_in/session_411/U_29.09.2019_00-21-12_correct.log"]
+filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
+                    "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
+                    "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
+                    "logs_in/session_409/temp/summary_409_correct.log",
+                    "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
+                    "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log"]
 
 filename_reference = "reference.txt"
 filename_addresses = "addresses.txt"
@@ -28,7 +29,7 @@ with open(filename_reference, 'r') as file_ref:
 for filename_in in filename_in_list:
     print("Calculate", filename_in)
 
-    filename_out = "logs_out/{0:s}.log".format(filename_in.split('/')[-2])
+    filename_out = "logs_out/{0:s}/{1:s}_config.log".format(filename_in.split('/')[-3], filename_in.split('/')[-3])
 
     with open(filename_in, 'r') as file_in:
         lines_in = file_in.readlines()
@@ -62,13 +63,21 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    # ALRM_TMR worked
+    filename_irq_mem = "{0:s}/{1:s}_irq_mem.log".format(os.path.split(filename_out)[1], filename_in.split('/')[-3])
+    with open(filename_irq_mem, 'w') as file_irq_mem:
+        json.dump(file_irq_mem, irq_mem, indent=2)
+
+    del irq_mem
+    del filename_irq_mem
+    del file_irq_mem
+
+    # ALARM TIMER worked
     count = 0
-    alrm = []
+    alarm = []
     while True:
         try:
             if lines_in[count][27:35] == COM_ALRM_TMR:
-                alrm.append(lines_in[count][:26])
+                alarm.append(lines_in[count][:26])
                 # lines_in.pop(count)
                 count += 1
 
@@ -77,6 +86,14 @@ for filename_in in filename_in_list:
 
         except IndexError:
             break
+
+    filename_alarm = "{0:s}/{1:s}_alarm.log".format(os.path.split(filename_out)[1], filename_in.split('/')[-3])
+    with open(filename_alarm, 'w') as file_alarm:
+        json.dump(file_alarm, alarm, indent=2)
+
+    del alarm
+    del filename_alarm
+    del file_alarm
 
     # Unreset
     count = 0
@@ -94,9 +111,18 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
+    filename_unreset = "{0:s}/{1:s}_unreset.log".format(os.path.split(filename_out)[1], filename_in.split('/')[-3])
+    with open(filename_unreset, 'w') as file_unreset:
+        json.dump(file_unreset, unreset, indent=2)
+
+    del unreset
+    del filename_unreset
+    del file_unreset
+
     # main parse
     count = 0
     errors = {}
+    repeat_packages = []
     while True:
         try:
             if lines_in[count][27:35] == COM_FLAG_ERROR:
@@ -114,11 +140,17 @@ for filename_in in filename_in_list:
 
                 for errors_count in range(number_errors):
                     if lines_in[count][27:35] == COM_ALRM_TMR \
-                            or lines_in[count + 1][27:35] == COM_ALRM_TMR \
-                            or lines_in[count][27:35] == COM_UNRESET_DEVICE \
-                            or lines_in[count + 1][27:35] == COM_UNRESET_DEVICE:
+                            or lines_in[count][27:35] == COM_UNRESET_DEVICE:
                         count += 1
+                        repeat_packages = []
                         break
+
+                    elif lines_in[count + 1][27:35] == COM_ALRM_TMR \
+                            or lines_in[count + 1][27:35] == COM_UNRESET_DEVICE:
+                        count += 2
+                        repeat_packages = []
+                        break
+
                     if lines_in[count][27:35] not in errors.keys():
                         errors[lines_in[count][27:35]] = []
                     if errors_count < number_errors:
@@ -127,9 +159,15 @@ for filename_in in filename_in_list:
                                 int(lines_in[count + 1][27:35], 16),
                                 int(mem_reference(lines_in[count + 1][27:35],
                                                   reference[lines_in[count][27:35]]), 16)))
-                            errors[lines_in[count][27:35]].append([lines_in[count][:26], lines_in[count + 1][27:35],
-                                                                   reference[lines_in[count][27:35]], reference_xor_word])
+                            if [lines_in[count][27:35], lines_in[count + 1][27:35]] not in repeat_packages:
+                                errors[lines_in[count][27:35]].append([lines_in[count][:26],
+                                                                       lines_in[count + 1][27:35],
+                                                                       reference[lines_in[count][27:35]],
+                                                                       reference_xor_word])
+                                repeat_packages.append([lines_in[count][27:35], lines_in[count + 1][27:35]])
+
                         except KeyError:
+                            print(number_errors, errors_count)
                             print(lines_in[count - 1][:-1])
                             print(lines_in[count][:-1])
                             exit("KeyError")
