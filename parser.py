@@ -139,9 +139,9 @@ for filename_in in filename_in_list:
     with open(filename_err_corr_irq, 'w') as file_err_corr_irq:
         json.dump(err_corr_irq, file_err_corr_irq, indent=2)
 
-    del unreset
-    del filename_unreset
-    del file_unreset
+    del err_corr_irq
+    del filename_err_corr_irq
+    del file_err_corr_irq
 
     # main parse
     count = 0
