@@ -63,9 +63,9 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_irq_mem = "{0:s}/{1:s}_irq_mem.log".format(os.path.split(filename_out)[1], filename_in.split('/')[-3])
+    filename_irq_mem = "{0:s}/{1:s}_irq_mem.log".format(os.path.split(filename_out)[0], filename_in.split('/')[-3])
     with open(filename_irq_mem, 'w') as file_irq_mem:
-        json.dump(file_irq_mem, irq_mem, indent=2)
+        json.dump(irq_mem, file_irq_mem, indent=2)
 
     del irq_mem
     del filename_irq_mem
@@ -87,9 +87,9 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_alarm = "{0:s}/{1:s}_alarm.log".format(os.path.split(filename_out)[1], filename_in.split('/')[-3])
+    filename_alarm = "{0:s}/{1:s}_alarm.log".format(os.path.split(filename_out)[0], filename_in.split('/')[-3])
     with open(filename_alarm, 'w') as file_alarm:
-        json.dump(file_alarm, alarm, indent=2)
+        json.dump(alarm, file_alarm, indent=2)
 
     del alarm
     del filename_alarm
@@ -111,9 +111,33 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_unreset = "{0:s}/{1:s}_unreset.log".format(os.path.split(filename_out)[1], filename_in.split('/')[-3])
+    filename_unreset = "{0:s}/{1:s}_unreset.log".format(os.path.split(filename_out)[0], filename_in.split('/')[-3])
     with open(filename_unreset, 'w') as file_unreset:
-        json.dump(file_unreset, unreset, indent=2)
+        json.dump(unreset, file_unreset, indent=2)
+
+    del unreset
+    del filename_unreset
+    del file_unreset
+
+    # err_CORR_IRQ
+    count = 0
+    err_corr_irq = []
+    while True:
+        try:
+            if lines_in[count][27:35] == COM_err_CORR_IRQ:
+                err_corr_irq.append(lines_in.pop(count)[:26])
+                count += 1
+
+            else:
+                count += 1
+
+        except IndexError:
+            break
+
+    filename_err_corr_irq = "{0:s}/{1:s}_err_corr.log".format(os.path.split(filename_out)[0],
+                                                              filename_in.split('/')[-3])
+    with open(filename_err_corr_irq, 'w') as file_err_corr_irq:
+        json.dump(err_corr_irq, file_err_corr_irq, indent=2)
 
     del unreset
     del filename_unreset
