@@ -29,7 +29,7 @@ with open(filename_reference, 'r') as file_ref:
 for filename_in in filename_in_list:
     print("Calculate", filename_in)
 
-    filename_out = "logs_out/{0:s}/{1:s}_config.log".format(filename_in.split('/')[-3], filename_in.split('/')[-3])
+    filename_parse = "logs_out/{0:s}/{1:s}_config.log".format(filename_in.split('/')[-3], filename_in.split('/')[-3])
 
     with open(filename_in, 'r') as file_in:
         lines_in = file_in.readlines()
@@ -63,7 +63,7 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_irq_mem = "{0:s}/{1:s}_irq_mem.log".format(os.path.split(filename_out)[0], filename_in.split('/')[-3])
+    filename_irq_mem = "{0:s}/{1:s}_irq_mem.log".format(os.path.split(filename_parse)[0], filename_in.split('/')[-3])
     with open(filename_irq_mem, 'w') as file_irq_mem:
         json.dump(irq_mem, file_irq_mem, indent=2)
 
@@ -87,7 +87,7 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_alarm = "{0:s}/{1:s}_alarm.log".format(os.path.split(filename_out)[0], filename_in.split('/')[-3])
+    filename_alarm = "{0:s}/{1:s}_alarm.log".format(os.path.split(filename_parse)[0], filename_in.split('/')[-3])
     with open(filename_alarm, 'w') as file_alarm:
         json.dump(alarm, file_alarm, indent=2)
 
@@ -111,7 +111,7 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_unreset = "{0:s}/{1:s}_unreset.log".format(os.path.split(filename_out)[0], filename_in.split('/')[-3])
+    filename_unreset = "{0:s}/{1:s}_unreset.log".format(os.path.split(filename_parse)[0], filename_in.split('/')[-3])
     with open(filename_unreset, 'w') as file_unreset:
         json.dump(unreset, file_unreset, indent=2)
 
@@ -134,7 +134,7 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    filename_err_corr_irq = "{0:s}/{1:s}_err_corr.log".format(os.path.split(filename_out)[0],
+    filename_err_corr_irq = "{0:s}/{1:s}_err_corr.log".format(os.path.split(filename_parse)[0],
                                                               filename_in.split('/')[-3])
     with open(filename_err_corr_irq, 'w') as file_err_corr_irq:
         json.dump(err_corr_irq, file_err_corr_irq, indent=2)
@@ -208,17 +208,37 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
+    lines_parse = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
                  'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
     for address in errors.keys():
-        lines_out[blocks_addresses[address]][address] = errors[address]
+        lines_parse[blocks_addresses[address]][address] = errors[address]
 
-    for block in lines_out.keys():
-        for address in lines_out[block].keys():
-            for error_frame in lines_out[block][address]:
+    for block in lines_parse.keys():
+        for address in lines_parse[block].keys():
+            for error_frame in lines_parse[block][address]:
                 if error_frame[1][:4] == "F0DA":
                     print(address)
                     exit()
 
-    with open(filename_out, 'w') as file_out:
-        json.dump(lines_out, file_out, indent=2)
+    with open(filename_parse, 'w') as file_parse:
+        json.dump(lines_parse, file_parse, indent=2)
+
+    # calculate number errors
+    filename_number_errors = "{0:s}_number_errors.log".format(os.path.splitext(filename_parse)[0][:-7])
+
+    errors_dict = lines_parse.copy()
+    lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
+                 'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
+    for module in errors_dict:
+        for address in errors_dict[module]:
+            lines_out[module][address] = sum([int(xor[3].count("1")) for xor in errors_dict[module][address]])
+
+    errors_all = {}
+    for module in lines_out:
+        errors_all[module] = sum([lines_out[module][address] for address in lines_out[module]])
+
+    with open(filename_number_errors, 'w') as file_number_errors:
+        file_number_errors.write(filename_parse + "\n")
+        json.dump(lines_out, file_number_errors, indent=2)
+        file_number_errors.write("\n")
+        json.dump(errors_all, file_number_errors, indent=2)
