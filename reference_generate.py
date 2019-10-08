@@ -24,9 +24,17 @@ while True:
         if lines[count][:-1].upper() == "FFFF0002":
             count += 1
             # blocks_addresses['channels'] = []
+            while lines[count][:-1].upper() != "FFFF0012":
+                # blocks_addresses['channels'].append(lines[count][:-1])
+                blocks_addresses[lines[count][:-1]] = "channels_config"
+                count += 2
+
+        if lines[count][:-1].upper() == "FFFF0012":
+            count += 1
+            # blocks_addresses['channels'] = []
             while lines[count][:-1].upper() != "FFFF0003":
                 # blocks_addresses['channels'].append(lines[count][:-1])
-                blocks_addresses[lines[count][:-1]] = "channels"
+                blocks_addresses[lines[count][:-1]] = "channels_accumulate"
                 count += 2
 
         if lines[count][:-1].upper() == "FFFF0003":
@@ -130,6 +138,7 @@ while True:
     try:
         if lines[count][:-1].upper() == "FFFF0001" \
                 or lines[count][:-1].upper() == "FFFF0002" \
+                or lines[count][:-1].upper() == "FFFF0012" \
                 or lines[count][:-1].upper() == "FFFF0003" \
                 or lines[count][:-1].upper() == "FFFF0004" \
                 or lines[count][:-1].upper() == "FFFF0005" \
