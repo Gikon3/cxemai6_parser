@@ -8,9 +8,6 @@ filename_in_list = ["logs_out/session_360/session_360_config.log",
                     "logs_out/session_410/session_410_config.log",
                     "logs_out/session_411/session_411_config.log"]
 
-lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
-             'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
-
 for filename_in in filename_in_list:
     print("Calculate", filename_in)
     filename_out = "number_errors/{0:s}_number_errors.txt".format(
@@ -19,6 +16,8 @@ for filename_in in filename_in_list:
     with open(filename_in, 'r') as file_in:
         errors_dict = json.load(file_in)
 
+    lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
+                 'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
     for module in errors_dict:
         for address in errors_dict[module]:
             lines_out[module][address] = sum([int(xor[3].count("1")) for xor in errors_dict[module][address]])
