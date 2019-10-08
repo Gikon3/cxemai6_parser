@@ -147,5 +147,5 @@ for filename_in in filename_alignment:
     with open("{0:s}/time_deleted_packages.log".format(os.path.split(filename_out)[0]), 'w') as file_del_pack:
         json.dump(del_time, file_del_pack, indent=2)
 
-    with open("rave/rave_{0:s}".format(os.path.split(filename_out)[1]), 'w') as file_rave:
+    with open("unnecessary/unnecessary_{0:s}".format(os.path.splitext(filename_in)[0][:-10]), 'w') as file_rave:
         json.dump(rave, file_rave, indent=2)
