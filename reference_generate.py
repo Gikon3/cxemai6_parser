@@ -1,8 +1,8 @@
 import json
 
-filename_in = "reference_generate.txt"
-filename_reference = "reference.txt"
-filename_addresses = "addresses.txt"
+filename_in = "technical_info/reference_generate.txt"
+filename_reference = "technical_info/reference.txt"
+filename_addresses = "technical_info/addresses.txt"
 
 with open(filename_in, 'r') as file_in:
     lines = file_in.readlines()
