@@ -188,7 +188,9 @@ for filename_in in filename_in_list:
                                                                        lines_in[count + 1][27:35],
                                                                        reference[lines_in[count][27:35]],
                                                                        reference_xor_word])
-                                repeat_packages.append([lines_in[count][27:35], lines_in[count + 1][27:35]])
+                                if blocks_addresses[lines_in[count][27:35]] == "channels_accumulate"\
+                                        or blocks_addresses[lines_in[count][27:35]] == "tlm":
+                                    repeat_packages.append([lines_in[count][27:35], lines_in[count + 1][27:35]])
 
                         except KeyError:
                             print(number_errors, errors_count)
