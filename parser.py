@@ -147,6 +147,8 @@ for filename_in in filename_in_list:
     count = 0
     errors = {}
     repeat_packages = []
+    memory_failure_coord_package = []
+    memory_failure_coord_package_list = []
     while True:
         try:
             if lines_in[count][27:35] == COM_FLAG_ERROR:
@@ -162,6 +164,7 @@ for filename_in in filename_in_list:
                 number_errors = number_errors if (number_errors * 2) < (THRESHOLD_ERRORS * 2) else THRESHOLD_ERRORS
                 count += 1
 
+                memory_failure_coord_package = []
                 for errors_count in range(number_errors):
                     if lines_in[count][27:35] == COM_ALRM_TMR \
                             or lines_in[count][27:35] == COM_UNRESET_DEVICE:
@@ -188,7 +191,19 @@ for filename_in in filename_in_list:
                                                                        lines_in[count + 1][27:35],
                                                                        reference[lines_in[count][27:35]],
                                                                        reference_xor_word])
-                                if blocks_addresses[lines_in[count][27:35]] == "channels_accumulate"\
+
+                                if blocks_addresses[lines_in[count][27:35]] == "memory":
+                                    for i, symbol in enumerate(reference_xor_word[::-1]):
+                                        if symbol == "1":
+                                            address_bin = "{0:032b}".format(int(lines_in[count][27:35], 16))
+                                            memory_failure_coord_package.append(
+                                                [int(address_bin[-5:-2], 2) * (i + 1),
+                                                 int(address_bin[-21:-6], 2)])
+                                    # if reference_xor_word.count("1") > 1:
+                                    #     print(lines_in[count][:35])
+                                    #     print(lines_in[count + 1][:35])
+
+                                if blocks_addresses[lines_in[count][27:35]] == "channels_accumulate" \
                                         or blocks_addresses[lines_in[count][27:35]] == "tlm":
                                     repeat_packages.append([lines_in[count][27:35], lines_in[count + 1][27:35]])
 
@@ -207,11 +222,15 @@ for filename_in in filename_in_list:
             else:
                 count += 1
 
+            if len(memory_failure_coord_package) > 0:
+                memory_failure_coord_package_list.append(memory_failure_coord_package)
+                memory_failure_coord_package = []
+
         except IndexError:
             break
 
     lines_parse = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
-                 'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
+                   'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
     for address in errors.keys():
         lines_parse[blocks_addresses[address]][address] = errors[address]
 
@@ -224,6 +243,11 @@ for filename_in in filename_in_list:
 
     with open(filename_parse, 'w') as file_parse:
         json.dump(lines_parse, file_parse, indent=2)
+
+    filename_memory_failure_coord = "{0:s}/{1:s}_memory_failure_coord.log".format(os.path.split(filename_parse)[0],
+                                                                                  filename_in.split('/')[-3])
+    with open(filename_memory_failure_coord, 'w') as file_memory_failure_coord:
+        json.dump(memory_failure_coord_package_list, file_memory_failure_coord, indent=2)
 
     # calculate number errors
     filename_number_errors = "{0:s}_number_errors.log".format(os.path.splitext(filename_parse)[0][:-7])
