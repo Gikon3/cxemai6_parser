@@ -247,7 +247,9 @@ for filename_in in filename_in_list:
     filename_memory_failure_coord = "{0:s}/{1:s}_memory_failure_coord.log".format(os.path.split(filename_parse)[0],
                                                                                   filename_in.split('/')[-3])
     with open(filename_memory_failure_coord, 'w') as file_memory_failure_coord:
-        json.dump(memory_failure_coord_package_list, file_memory_failure_coord, indent=2)
+        # json.dump(memory_failure_coord_package_list, file_memory_failure_coord, indent=2)
+        for line in memory_failure_coord_package_list:
+            file_memory_failure_coord.write(line + "\n")
 
     # calculate number errors
     filename_number_errors = "{0:s}_number_errors.log".format(os.path.splitext(filename_parse)[0][:-7])
