@@ -1213,6 +1213,7 @@
   "4000530C": "channels_config",
   "40005310": "channels_config",
   "40005314": "channels_config",
+  "40005320": "channels_config",
   "40005324": "channels_config",
   "40005328": "channels_config",
   "4000532C": "channels_config",
