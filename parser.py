@@ -11,8 +11,8 @@ filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log"
                     "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
                     "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log"]
 
-filename_reference = "reference.txt"
-filename_addresses = "addresses.txt"
+filename_reference = "technical_info/reference.txt"
+filename_addresses = "technical_info/addresses.txt"
 
 
 def mem_reference(word, word_ref):
@@ -184,10 +184,6 @@ for filename_in in filename_in_list:
                                 int(mem_reference(lines_in[count + 1][27:35],
                                                   reference[lines_in[count][27:35]]), 16)))
                             if [lines_in[count][27:35], lines_in[count + 1][27:35]] not in repeat_packages:
-                                # if 0x40001000 <= int(lines_in[count][27:35], 16) < 0x40009000:
-                                #     if 0x00 <= int(lines_in[count][33:35], 16) < 0x48:
-                                #         if lines_in[count][27:35] not in errors.keys():
-                                #             errors[lines_in[count][27:35]] = []
                                 errors[lines_in[count][27:35]].append([lines_in[count][:26],
                                                                        lines_in[count + 1][27:35],
                                                                        reference[lines_in[count][27:35]],
@@ -212,9 +208,7 @@ for filename_in in filename_in_list:
         except IndexError:
             break
 
-    # lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
-    #              'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
-    lines_out = {'alrm_tmr': {}, 'channels': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
+    lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
                  'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
     for address in errors.keys():
         lines_out[blocks_addresses[address]][address] = errors[address]
