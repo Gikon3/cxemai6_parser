@@ -1,18 +1,22 @@
 import os
 import json
 
-filename_in_list = ["logs_out/session_360.log",
-                    "logs_out/session_361.log",
-                    "logs_out/session_362.log",
-                    "logs_out/session_410.log",
-                    "logs_out/session_411.log"]
+filename_in_list = ["logs_out/session_360/session_360_config.log",
+                    "logs_out/session_361/session_361_config.log",
+                    "logs_out/session_362/session_362_config.log",
+                    "logs_out/session_410/session_410_config.log",
+                    "logs_out/session_410/session_410_config.log",
+                    "logs_out/session_411/session_411_config.log"]
 
-lines_out = {'alrm_tmr': {}, 'channels': {}, 'fts': {}, 'gpio': {}, 'inmux': {}, 'pll': {}, 'spim4': {}, 'tlm': {},
-                 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
+# lines_out = {'alrm_tmr': {}, 'channels_config': {}, 'channels_accumulate': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
+# #              'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
+lines_out = {'alrm_tmr': {}, 'channels': {}, 'fts': {}, 'gpio': {}, 'inmux': {},
+             'pll': {}, 'spim4': {}, 'tlm': {}, 'tmr1': {}, 'tsm': {}, 'uart1': {}, 'uart2': {}, 'memory': {}}
 
 for filename_in in filename_in_list:
     print("Calculate", filename_in)
-    filename_out = "number_errors/{0:s}.txt".format(os.path.splitext(os.path.split(filename_in)[1])[-2])
+    filename_out = "number_errors/{0:s}_number_errors.txt".format(
+        os.path.splitext(os.path.split(filename_in)[1])[-2][:-7])
 
     with open(filename_in, 'r') as file_in:
         errors_dict = json.load(file_in)
