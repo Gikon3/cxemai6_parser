@@ -29,7 +29,7 @@ for filename_in in filename_in_list:
             long_lines.append(i)
 
     for i in long_lines:
-        lines_in[i] = "{0:s}\n{1:s} {2:s}".format(lines_in[i][0:35], "_" * 26, lines_in[i][35:])
+        lines_in[i] = "{0:s}\n{1:s} {2:s}".format(lines_in[i][:35], lines_in[i + 1][:26], lines_in[i][35:])
 
     with open(filename_out, 'w') as file_out:
         file_out.writelines(lines_in)
