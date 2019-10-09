@@ -197,8 +197,8 @@ for filename_in in filename_in_list:
                                         if symbol == "1":
                                             address_bin = "{0:032b}".format(int(lines_in[count][27:35], 16))
                                             memory_failure_coord_package.append(
-                                                [int(address_bin[-5:-2], 2) * (i + 1),
-                                                 int(address_bin[-21:-6], 2)])
+                                                [8 * i + int(address_bin[-5:-2], 2) + 1,
+                                                 int(address_bin[-22:-6], 2)])
                                     # if reference_xor_word.count("1") > 1:
                                     #     print(lines_in[count][:35])
                                     #     print(lines_in[count + 1][:35])
