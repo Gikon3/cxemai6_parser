@@ -35,18 +35,18 @@ for filename_in in filename_in_list:
         lines_in = file_in.readlines()
 
     # Remove COM_OK
-    count = 0
-    while True:
-        try:
-            if lines_in[count][27:35] == COM_OK:
-                lines_in.pop(count)  # COM_OK
-                lines_in.pop(count)  # Epoch
-
-            else:
-                count += 1
-
-        except IndexError:
-            break
+    # count = 0
+    # while True:
+    #     try:
+    #         if lines_in[count][27:35] == COM_OK:
+    #             lines_in.pop(count)  # COM_OK
+    #             lines_in.pop(count)  # Epoch
+    #
+    #         else:
+    #             count += 1
+    #
+    #     except IndexError:
+    #         break
 
     # IRQ memory
     count = 0
@@ -215,6 +215,9 @@ for filename_in in filename_in_list:
             elif lines_in[count][27:35] == COM_UNRESET_DEVICE:
                 count += 1
                 repeat_packages = []
+
+            elif lines_in[count][27:35] == COM_OK:
+                count += 2
 
             else:
                 count += 1
