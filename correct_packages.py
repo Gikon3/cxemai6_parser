@@ -6,10 +6,10 @@ from defines import *
 filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54.log",
                     "logs_in/session_361/U_26.09.2019_06-56-58.log",
                     "logs_in/session_362/U_26.09.2019_07-18-06.log",
-                    "logs_in/session_409/summary_409.log",
+                    "logs_in/session_409/summary_409_death.log",
                     "logs_in/session_410/U_28.09.2019_23-41-46.log",
                     "logs_in/session_411/U_29.09.2019_00-21-12.log"]
-filename_addresses = "addresses.txt"
+filename_addresses = "technical_info/addresses.txt"
 
 # alignment packages
 print("Alignment:")
@@ -147,5 +147,7 @@ for filename_in in filename_alignment:
     with open("{0:s}_remove_packages.log".format(os.path.splitext(filename_out)[0][:-10]), 'w') as file_del_pack:
         json.dump(del_time, file_del_pack, indent=2)
 
-    with open("unnecessary/unnecessary_{0:s}".format(os.path.splitext(filename_in)[0][:-10]), 'w') as file_rave:
+    print("unnecessary/{0:s}_unnecessary.log".format(os.path.split(os.path.splitext(filename_out)[0][:-8])[-1]))
+    with open("unnecessary/{0:s}_unnecessary.log".format(os.path.split(os.path.splitext(filename_out)[0][:-8])[-1]),
+              'w') as file_rave:
         json.dump(rave, file_rave, indent=2)
