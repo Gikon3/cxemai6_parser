@@ -3,12 +3,13 @@ import json
 
 from defines import *
 
-filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54.log",
-                    "logs_in/session_361/U_26.09.2019_06-56-58.log",
-                    "logs_in/session_362/U_26.09.2019_07-18-06.log",
-                    "logs_in/session_409/summary_409_death.log",
-                    "logs_in/session_410/U_28.09.2019_23-41-46.log",
-                    "logs_in/session_411/U_29.09.2019_00-21-12.log"]
+filename_in_list = ["logs_in/session_186/U_18.09.2019_23-39-09_parse.log"]
+# filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54.log",
+#                     "logs_in/session_361/U_26.09.2019_06-56-58.log",
+#                     "logs_in/session_362/U_26.09.2019_07-18-06.log",
+#                     "logs_in/session_409/summary_409_death.log",
+#                     "logs_in/session_410/U_28.09.2019_23-41-46.log",
+#                     "logs_in/session_411/U_29.09.2019_00-21-12.log"]
 filename_addresses = "technical_info/addresses.txt"
 
 # alignment packages
@@ -29,7 +30,10 @@ for filename_in in filename_in_list:
             long_lines.append(i)
 
     for i in long_lines:
-        lines_in[i] = "{0:s}\n{1:s} {2:s}".format(lines_in[i][:35], lines_in[i + 1][:26], lines_in[i][35:])
+        if len(lines_in[i]) > 36:
+            lines_in[i] = "{0:s}\n{1:8s} {2:8s}\n".format(lines_in[i][:35], lines_in[i + 1][:26], lines_in[i][35:-1])
+        else:
+            lines_in[i] = "{0:s} {1:<8s}\n".format(lines_in[i][:26], lines_in[i][27:-1])
 
     with open(filename_out, 'w') as file_out:
         file_out.writelines(lines_in)
@@ -147,7 +151,6 @@ for filename_in in filename_alignment:
     with open("{0:s}_remove_packages.log".format(os.path.splitext(filename_out)[0][:-10]), 'w') as file_del_pack:
         json.dump(del_time, file_del_pack, indent=2)
 
-    print("unnecessary/{0:s}_unnecessary.log".format(os.path.split(os.path.splitext(filename_out)[0][:-8])[-1]))
     with open("unnecessary/{0:s}_unnecessary.log".format(os.path.split(os.path.splitext(filename_out)[0][:-8])[-1]),
               'w') as file_rave:
         json.dump(rave, file_rave, indent=2)
