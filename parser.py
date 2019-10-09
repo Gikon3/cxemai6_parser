@@ -7,7 +7,7 @@ from defines import *
 filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
                     "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
                     "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
-                    "logs_in/session_409/temp/summary_409_correct.log",
+                    "logs_in/session_409/temp/summary_409_death_correct.log",
                     "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
                     "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log"]
 
@@ -198,10 +198,7 @@ for filename_in in filename_in_list:
                                             address_bin = "{0:032b}".format(int(lines_in[count][27:35], 16))
                                             memory_failure_coord_package.append(
                                                 [8 * i + int(address_bin[-5:-2], 2) + 1,
-                                                 int(address_bin[-22:-6], 2)])
-                                    # if reference_xor_word.count("1") > 1:
-                                    #     print(lines_in[count][:35])
-                                    #     print(lines_in[count + 1][:35])
+                                                 int(address_bin[-6:-5] + address_bin[-22:-6], 2)])
 
                                 if blocks_addresses[lines_in[count][27:35]] == "channels_accumulate" \
                                         or blocks_addresses[lines_in[count][27:35]] == "tlm":
