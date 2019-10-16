@@ -3,13 +3,23 @@ import json
 
 from defines import *
 
-filename_in_list = ["logs_in/session_186/U_18.09.2019_23-39-09_parse.log"]
+# filename_in_list = ["logs_in/session_184/sum_184.log",
+#                     "logs_in/session_186/U_18.09.2019_23-39-09_parse.log"]
 # filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54.log",
 #                     "logs_in/session_361/U_26.09.2019_06-56-58.log",
 #                     "logs_in/session_362/U_26.09.2019_07-18-06.log",
 #                     "logs_in/session_409/summary_409_death.log",
 #                     "logs_in/session_410/U_28.09.2019_23-41-46.log",
 #                     "logs_in/session_411/U_29.09.2019_00-21-12.log"]
+filename_in_list = ["logs_in/session_143/U_14.10.2019_21-03-38.log",
+                    "logs_in/session_144/U_14.10.2019_21-23-18.log",
+                    "logs_in/session_145/U_14.10.2019_21-44-54.log",
+                    "logs_in/session_146/U_14.10.2019_21-59-01.log",
+                    "logs_in/session_147/U_14.10.2019_22-14-16.log",
+                    "logs_in/session_148/U_14.10.2019_22-30-06.log",
+                    "logs_in/session_149/U_14.10.2019_22-39-54.log",
+                    "logs_in/session_150/U_14.10.2019_23-01-49.log",
+                    "logs_in/session_151/U_14.10.2019_23-22-24.log"]
 filename_addresses = "technical_info/addresses.txt"
 
 # alignment packages
