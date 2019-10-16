@@ -1,15 +1,28 @@
 import os
 import json
 import operator
+import re
 
 from defines import *
 
-filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
-                    "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
-                    "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
-                    "logs_in/session_409/temp/summary_409_death_correct.log",
-                    "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
-                    "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log"]
+# filename_in_list = ["logs_in/session_186/temp/U_18.09.2019_23-39-09_parse_correct.log"]
+# filename_in_list = ["unnecessary/session_184/temp/sum_184_unnecessary_processed.log"]
+# filename_in_list = ["unnecessary/session_186/temp/U_18.09.2019_23-39-09_parse_unnecessary_processed.log"]
+# filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
+#                     "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
+#                     "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
+#                     "logs_in/session_409/temp/summary_409_death_correct.log",
+#                     "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
+#                     "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log"]
+filename_in_list = ["logs_in/session_143/temp/U_14.10.2019_21-03-38_correct.log",
+                    "logs_in/session_144/temp/U_14.10.2019_21-23-18_correct.log",
+                    "logs_in/session_145/temp/U_14.10.2019_21-44-54_correct.log",
+                    "logs_in/session_146/temp/U_14.10.2019_21-59-01_correct.log",
+                    "logs_in/session_147/temp/U_14.10.2019_22-14-16_correct.log",
+                    "logs_in/session_148/temp/U_14.10.2019_22-30-06_correct.log",
+                    "logs_in/session_149/temp/U_14.10.2019_22-39-54_correct.log",
+                    "logs_in/session_150/temp/U_14.10.2019_23-01-49_correct.log",
+                    "logs_in/session_151/temp/U_14.10.2019_23-22-24_correct.log"]
 
 filename_reference = "technical_info/reference.txt"
 filename_addresses = "technical_info/addresses.txt"
@@ -160,8 +173,13 @@ for filename_in in filename_in_list:
                 # module
                 count += 1
 
-                number_errors = int(lines_in[count][27:35], 16)
-                number_errors = number_errors if (number_errors * 2) < (THRESHOLD_ERRORS * 2) else THRESHOLD_ERRORS
+                try:
+                    number_errors = int(lines_in[count][27:35], 16)
+                    number_errors = number_errors if (number_errors * 2) < (THRESHOLD_ERRORS * 2) else THRESHOLD_ERRORS
+                except ValueError:
+                    print(lines_in[count])
+                    print(lines_in[count + 1])
+                    exit("ValueError")
                 count += 1
 
                 memory_failure_coord_package = []
@@ -236,10 +254,11 @@ for filename_in in filename_in_list:
 
     for block in lines_parse.keys():
         for address in lines_parse[block].keys():
-            for error_frame in lines_parse[block][address]:
+            for i, error_frame in enumerate(lines_parse[block][address]):
                 if error_frame[1][:4] == "F0DA":
                     print(address)
-                    exit()
+                    # lines_parse[block][address].pop()
+                    exit("Opcode in value")
 
     with open(filename_parse, 'w') as file_parse:
         json.dump(lines_parse, file_parse, indent=2)
@@ -248,8 +267,8 @@ for filename_in in filename_in_list:
                                                                                   filename_in.split('/')[-3])
     with open(filename_memory_failure_coord, 'w') as file_memory_failure_coord:
         # json.dump(memory_failure_coord_package_list, file_memory_failure_coord, indent=2)
-        for line in memory_failure_coord_package_list:
-            file_memory_failure_coord.write(str(line) + "\n")
+        for pack in memory_failure_coord_package_list:
+            file_memory_failure_coord.write(re.sub("]", "}", re.sub("\[", "{", str(pack) + "\n")))
 
     # calculate number errors
     filename_number_errors = "{0:s}_number_errors.log".format(os.path.splitext(filename_parse)[0][:-7])
