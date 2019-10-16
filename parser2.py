@@ -28,7 +28,7 @@ for filename_in in filename_in_list:
 
     with open(filename_in, 'r') as file_in:
         lines_in = file_in.readlines()
-# main parse
+    # main parse
     count = 0
     errors = {}
     repeat_packages = []
