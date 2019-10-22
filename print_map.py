@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from  matplotlib import colors
 import os
 import json
 
@@ -17,19 +16,37 @@ filename_coord_list = ["logs_out/session_143/session_143_memory_failure_coord_ma
 for filename_coord in filename_coord_list:
     print("Calculate", filename_coord)
 
-    memory_map = np.zeros((4096, 32 * 8))
     with open(filename_coord, 'r') as file_coord:
-        coord = (pair[1:-2].split(',') for pair in file_coord)
-        coord = ([int(pair[0]), int(pair[1])] for pair in coord)
+        pairs = ((json.loads(pair)[0], json.loads(pair)[1]) for pair in file_coord.readlines())
+        coord = ([pair[0] - 1, int(
+            "{0:3s}{1:1s}{2:8s}".format("{0:017b}".format(pair[1] - 1)[-11:-8],
+                                        "{0:017b}".format(pair[1] - 1)[-17:-16],
+                                        "{0:017b}".format(pair[1] - 1)[-8:]), 2)] for pair in pairs)
 
-        for pair in coord:
-            memory_map[
-                int("{0:032b}".format(pair[1])[16:], 2) + (int("{0:032b}".format(pair[1])[15:16], 2) - 1) * 2048 - 1,
-                pair[0] - 1] += 1
+    memory_map = np.zeros((512 * 8, 32 * 8))
+    for pair in coord:
+        memory_map[pair[1], pair[0]] = + 1
 
-    plt.imshow(memory_map)
-    name = "images/{0:s}.png".format(os.path.split(filename_coord)[1][:-29])
-    plt.savefig(name, interpolation='none', format='png', dpi=2000)
+    fig, ax = plt.subplots()
+    ax.matshow(memory_map)
+    # ax.grid(color='w', linestyle=':', linewidth=1)
+    # ax.set_xticks(np.arange(-.5, 512, 1))
+    # ax.set_yticks(np.arange(-.5, 2048, 1))
+    # ax.set_xticklabels(np.arange(0, 512, 1))
+    # ax.set_yticklabels(np.arange(0, 2048, 1))
+    # for i, j in zip(*memory_map.nonzero()):
+    #     ax.text(j, i, memory_map[i, j], color='white', ha='center', va='center', fontsize=8)
 
-# with open("test.log", 'w') as f_test:
-#     f_test.writelines([str(l) + "\n" for l in memory_map])
+    # ax.set_xticks(np.arange(-.5, 256, 256))
+    # ax.set_yticks(np.arange(-.5, 2048, 512))
+
+    fig.suptitle("Map memory", fontsize=16)
+
+    # plt.show()
+    filename_png = "images/{0:s}.png".format(os.path.split(filename_coord)[1][:-29])
+    plt.savefig(filename_png, interpolation='none', format='png', dpi=2000)
+
+    for i in range(8):
+        ax.matshow(memory_map[512 * i:512 * (i + 1), :])
+        filename_png = "images/{0:s}_{1:d}.png".format(os.path.split(filename_coord)[1][:-29], i)
+        plt.savefig(filename_png, interpolation='none', format='png', dpi=1000)
