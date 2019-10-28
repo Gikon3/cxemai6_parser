@@ -8,13 +8,13 @@ from defines import *
 # filename_in_list = ["logs_in/session_186/temp/U_18.09.2019_23-39-09_parse_correct.log"]
 # filename_in_list = ["unnecessary/session_184/temp/sum_184_unnecessary_processed.log"]
 # filename_in_list = ["unnecessary/session_186/temp/U_18.09.2019_23-39-09_parse_unnecessary_processed.log"]
-# filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
-#                     "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
-#                     "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
-#                     "logs_in/session_409/temp/summary_409_death_correct.log",
-#                     "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
-#                     "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log"]
-filename_in_list = ["logs_in/session_143/temp/U_14.10.2019_21-03-38_correct.log",
+filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
+                    "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
+                    "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
+                    "logs_in/session_409/temp/summary_409_death_correct.log",
+                    "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
+                    "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log",
+                    "logs_in/session_143/temp/U_14.10.2019_21-03-38_correct.log",
                     "logs_in/session_144/temp/U_14.10.2019_21-23-18_correct.log",
                     "logs_in/session_145/temp/U_14.10.2019_21-44-54_correct.log",
                     "logs_in/session_146/temp/U_14.10.2019_21-59-01_correct.log",
