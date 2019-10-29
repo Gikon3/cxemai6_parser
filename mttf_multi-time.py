@@ -5,6 +5,9 @@ import re
 
 sigma_list = [5.79E-9, 5.02E-9, 3.86E-9, 1.06E-9, 3.02E-9, 3.14E-9, 7.93E-9, 5.37E-9, 6.91E-9, 4.95E-9, 3.78E-9,
               6.86E-9, 5.95E-9, 1.18E-8, 1.10E-8]
+# session            360  361  362  409  410  411  143  144  145  146  147  148  149  150  151
+flux_density_list = [254, 384, 470, 514, 343, 559, 278, 390, 444, 496, 266, 281, 555, 505, 410]
+#                   [ 10, 300,  10,  10, 300,  10,  10, 300, 300,  10,  10,  10,  10,  10,  10]
 time_session_list = [821, 657, 364, 1329, 1250, 651, 683, 662, 429, 392, 285, 95, 344, 388, 454]
 M = 1500
 w = 32
@@ -30,16 +33,18 @@ filename_interval_unreset_list = ["logs_out/session_360/session_360_time_interva
 fig, ax = plt.subplots()
 ax.grid(color='black', linestyle=':', linewidth=1)
 ax.set_xticks(np.arange(0, 1400, 100))
-ax.set_yticks(np.arange(0.99, 1., 0.001))
+ax.set_yticks(np.arange(0.91, 1.01, 0.01))
 ax.set_xlabel("Time")
 ax.set_ylabel("R(t)")
 
-average_unreset_list = []
-for filename_unreset, sigma, time_session, session in zip(filename_interval_unreset_list, sigma_list, time_session_list,
-                                                          session_list):
+time_unreset_list = []
+for filename_unreset, sigma, flux_density, time_session, session in zip(filename_interval_unreset_list, sigma_list,
+                                                                        flux_density_list, time_session_list,
+                                                                        session_list):
     with open(filename_unreset, 'r') as file_unreset:
         line_list = [line[:-1] for line in file_unreset.readlines()]
-        average_unreset_list = (float(line) for line in line_list[:-1])
+        time_unreset_list = (float(line) for line in line_list[:-1])
+        average_unreset = float(line_list[-1][10:-1])
         del line_list
 
     MTTF = 0
@@ -47,8 +52,9 @@ for filename_unreset, sigma, time_session, session in zip(filename_interval_unre
     build = []
     build_lite = []
     T_total = 0
-    for i, T in enumerate(average_unreset_list):
-        lmbd = sigma * M * (w + c) / time_session
+    for i, T in enumerate(time_unreset_list):
+        # lmbd = sigma * M * (w + c) / time_session
+        lmbd = sigma * flux_density
 
         for time in np.arange(0, T, 0.01):
             build.append(
