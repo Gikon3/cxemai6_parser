@@ -156,6 +156,30 @@ for filename_in in filename_in_list:
     del filename_err_corr_irq
     del file_err_corr_irq
 
+    # err2_mem
+    count = 0
+    err2_mem = []
+    while True:
+        try:
+            if lines_in[count][27:35] == COM_ERR2_MEM:
+                err2_mem.append(lines_in.pop(count)[:26])
+                count += 1
+
+            else:
+                count += 1
+
+        except IndexError:
+            break
+
+    filename_err2_mem = "{0:s}/{1:s}_err2_mem.log".format(os.path.split(filename_parse)[0],
+                                                          filename_in.split('/')[-3])
+    with open(filename_err2_mem, 'w') as file_err2_mem:
+        json.dump(err2_mem, file_err2_mem, indent=2)
+
+    del err2_mem
+    del filename_err2_mem
+    del file_err2_mem
+
     # main parse
     count = 0
     errors = {}
