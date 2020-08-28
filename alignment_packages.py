@@ -1,13 +1,16 @@
 import os
 
-filename_in_list = ["logs_in/session_184/sum_184.log",
-                    "logs_in/session_186/U_18.09.2019_23-39-09_parse.log"]
+# filename_in_list = ["logs_in/session_184/sum_184.log",
+#                     "logs_in/session_186/U_18.09.2019_23-39-09_parse.log"]
 # filename_in_list = ["logs_in/session_360/U_26.09.2019_05-11-54.log",
 #                     "logs_in/session_361/U_26.09.2019_06-56-58.log",
 #                     "logs_in/session_362/U_26.09.2019_07-18-06.log",
 #                     "logs_in/session_409/summary_409_death.log",
 #                     "logs_in/session_410/U_28.09.2019_23-41-46.log",
 #                     "logs_in/session_411/U_29.09.2019_00-21-12.log"]
+filename_in_list = ["logs_in/session_88/session_88.log",
+                    "logs_in/session_89/session_89.log",
+                    "logs_in/session_90/session_90.log"]
 filename_addresses = "technical_info/addresses.txt"
 
 # alignment packages

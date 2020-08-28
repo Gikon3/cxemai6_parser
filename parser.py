@@ -8,29 +8,47 @@ from defines import *
 # filename_in_list = ["logs_in/session_186/temp/U_18.09.2019_23-39-09_parse_correct.log"]
 # filename_in_list = ["unnecessary/session_184/temp/sum_184_unnecessary_processed.log"]
 # filename_in_list = ["unnecessary/session_186/temp/U_18.09.2019_23-39-09_parse_unnecessary_processed.log"]
-filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
-                    "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
-                    "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
-                    "logs_in/session_409/temp/summary_409_death_correct.log",
-                    "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
-                    "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log",
-                    "logs_in/session_143/temp/U_14.10.2019_21-03-38_correct.log",
-                    "logs_in/session_144/temp/U_14.10.2019_21-23-18_correct.log",
-                    "logs_in/session_145/temp/U_14.10.2019_21-44-54_correct.log",
-                    "logs_in/session_146/temp/U_14.10.2019_21-59-01_correct.log",
-                    "logs_in/session_147/temp/U_14.10.2019_22-14-16_correct.log",
-                    "logs_in/session_148/temp/U_14.10.2019_22-30-06_correct.log",
-                    "logs_in/session_149/temp/U_14.10.2019_22-39-54_correct.log",
-                    "logs_in/session_150/temp/U_14.10.2019_23-01-49_correct.log",
-                    "logs_in/session_151/temp/U_14.10.2019_23-22-24_correct.log"]
+# filename_in_list = ["logs_in/session_360/temp/U_26.09.2019_05-11-54_correct.log",
+#                     "logs_in/session_361/temp/U_26.09.2019_06-56-58_correct.log",
+#                     "logs_in/session_362/temp/U_26.09.2019_07-18-06_correct.log",
+#                     "logs_in/session_409/temp/summary_409_death_correct.log",
+#                     "logs_in/session_410/temp/U_28.09.2019_23-41-46_correct.log",
+#                     "logs_in/session_411/temp/U_29.09.2019_00-21-12_correct.log",
+#                     "logs_in/session_143/temp/U_14.10.2019_21-03-38_correct.log",
+#                     "logs_in/session_144/temp/U_14.10.2019_21-23-18_correct.log",
+#                     "logs_in/session_145/temp/U_14.10.2019_21-44-54_correct.log",
+#                     "logs_in/session_146/temp/U_14.10.2019_21-59-01_correct.log",
+#                     "logs_in/session_147/temp/U_14.10.2019_22-14-16_correct.log",
+#                     "logs_in/session_148/temp/U_14.10.2019_22-30-06_correct.log",
+#                     "logs_in/session_149/temp/U_14.10.2019_22-39-54_correct.log",
+#                     "logs_in/session_150/temp/U_14.10.2019_23-01-49_correct.log",
+#                     "logs_in/session_151/temp/U_14.10.2019_23-22-24_correct.log"]
+filename_in_list = [
+    "logs_in/session_88/temp/session_88_correct.log",
+    "logs_in/session_89/temp/session_89_correct.log",
+    "logs_in/session_90/temp/session_90_correct.log",
+    "logs_in/session_284/temp/session_284_correct.log",
+    "logs_in/session_284_short/temp/session_284_short_correct.log",
+    "logs_in/session_284_notshort/temp/session_284_notshort_correct.log",
+    "logs_in/session_285/temp/session_285_correct.log",
+    "logs_in/session_285_short/temp/session_285_short_correct.log",
+    "logs_in/session_285_notshort/temp/session_285_notshort_correct.log",
+    "logs_in/session_336_cxemai6_1_Ne/temp/session_336_cxemai6_1_Ne_correct.log",
+    "logs_in/session_337_cxemai6_2_Ne/temp/session_337_cxemai6_2_Ne_correct.log",
+    "logs_in/session_338_cxemai6_3_Ne/temp/session_338_cxemai6_3_Ne_correct.log",
+]
 
 filename_reference = "technical_info/reference.txt"
 filename_addresses = "technical_info/addresses.txt"
 
 
 def mem_reference(word, word_ref):
-    return word_ref if word_ref.upper() != "XXXXXXXX" else "55555555" if word.count("5") > word.upper().count("A") \
-        else "AAAAAAAA"
+    pattern_list = ["00000000", "FFFFFFFF", "55555555", "AAAAAAAA"]
+    pattern_count_list = [word.count("0"), word.count("F"), word.count("5"), word.count("A")]
+    pattern = pattern_list[pattern_count_list.index(max(pattern_count_list))]
+    return word_ref if word_ref.upper() != "XXXXXXXX" else pattern
+    # return word_ref if word_ref.upper() != "XXXXXXXX" else "55555555" if word.count("5") > word.upper().count("A") \
+    #     else "AAAAAAAA"
 
 
 with open(filename_addresses, 'r') as file_addr:

@@ -11,15 +11,29 @@ from defines import *
 #                     "logs_in/session_409/summary_409_death.log",
 #                     "logs_in/session_410/U_28.09.2019_23-41-46.log",
 #                     "logs_in/session_411/U_29.09.2019_00-21-12.log"]
-filename_in_list = ["logs_in/session_143/U_14.10.2019_21-03-38.log",
-                    "logs_in/session_144/U_14.10.2019_21-23-18.log",
-                    "logs_in/session_145/U_14.10.2019_21-44-54.log",
-                    "logs_in/session_146/U_14.10.2019_21-59-01.log",
-                    "logs_in/session_147/U_14.10.2019_22-14-16.log",
-                    "logs_in/session_148/U_14.10.2019_22-30-06.log",
-                    "logs_in/session_149/U_14.10.2019_22-39-54.log",
-                    "logs_in/session_150/U_14.10.2019_23-01-49.log",
-                    "logs_in/session_151/U_14.10.2019_23-22-24.log"]
+# filename_in_list = ["logs_in/session_143/U_14.10.2019_21-03-38.log",
+#                     "logs_in/session_144/U_14.10.2019_21-23-18.log",
+#                     "logs_in/session_145/U_14.10.2019_21-44-54.log",
+#                     "logs_in/session_146/U_14.10.2019_21-59-01.log",
+#                     "logs_in/session_147/U_14.10.2019_22-14-16.log",
+#                     "logs_in/session_148/U_14.10.2019_22-30-06.log",
+#                     "logs_in/session_149/U_14.10.2019_22-39-54.log",
+#                     "logs_in/session_150/U_14.10.2019_23-01-49.log",
+#                     "logs_in/session_151/U_14.10.2019_23-22-24.log"]
+filename_in_list = [
+    # "logs_in/session_88/session_88.log",
+    # "logs_in/session_89/session_89.log",
+    # "logs_in/session_90/session_90.log",
+    # "logs_in/session_284/session_284.log",
+    # "logs_in/session_284/session_284_short.log",
+    # "logs_in/session_284/session_284_notshort.log",
+    # "logs_in/session_285/session_285.log",
+    # "logs_in/session_285/session_285_short.log",
+    # "logs_in/session_285/session_285_notshort.log"
+    "logs_in/session_336_cxemai6_1_Ne/session_336_cxemai6_1_Ne.log",
+    "logs_in/session_337_cxemai6_2_Ne/session_337_cxemai6_2_Ne.log",
+    "logs_in/session_338_cxemai6_3_Ne/session_338_cxemai6_3_Ne.log",
+]
 filename_addresses = "technical_info/addresses.txt"
 
 # alignment packages
